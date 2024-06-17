@@ -4,6 +4,7 @@ import { Engine, Scene, AxesViewer, Vector3, ArcRotateCamera, HavokPlugin } from
 import HavokPhysics from '@babylonjs/havok'
 
 import MainScene from './playground/main-scene'
+import { FallingBallScene } from './scenes/fallingBall'
 
 class App {
   public engine: Engine
@@ -35,7 +36,7 @@ class App {
     // Add physics. If not needed, you can annotate it to improve loading speed and environment performance.
     await this._setPhysics()
 
-    new MainScene(this.scene, this.canvas, this.engine)
+    new FallingBallScene(this.scene, this.canvas, this.engine)
 
     this._config()
     this._renderer()
@@ -99,6 +100,7 @@ class App {
   _renderer(): void {
     this.engine.runRenderLoop(() => {
       this._fps()
+      // this.scene.useRightHandedSystem = true;
       this.scene.render()
     })
   }
