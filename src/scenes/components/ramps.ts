@@ -25,8 +25,9 @@ export class Ramps {
             "./model/",
             "rampa.glb",
             this.scene
-
         );
+    new PhysicsAggregate(ramps.meshes[0], PhysicsShapeType.BOX, { mass: 0 }, this.scene)
+
 
     }
 
