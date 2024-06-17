@@ -90,6 +90,7 @@ class App {
 
   // Auxiliary Class Configuration
   _config(): void {
+   
     // Axes
     new AxesViewer()
 
@@ -100,7 +101,7 @@ class App {
   _renderer(): void {
     this.engine.runRenderLoop(() => {
       this._fps()
-      // this.scene.useRightHandedSystem = true;
+      this.scene.useRightHandedSystem = true;
       this.scene.render()
     })
   }

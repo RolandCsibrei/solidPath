@@ -1,22 +1,33 @@
 
-import { MeshBuilder, PhysicsAggregate, PhysicsShapeType, Scene, SceneLoader, Vector3 } from '@babylonjs/core'
+import { Color3, MeshBuilder, PBRMaterial, PhysicsAggregate, PhysicsShapeType, Scene, SceneLoader, StandardMaterial, Vector3 } from '@babylonjs/core'
 import "@babylonjs/loaders";
 
 export class Ramps {
-    constructor(private scene: Scene) {
+    
+    private pbr: PBRMaterial;
+    private redMat: StandardMaterial;
 
+    constructor(private scene: Scene) {
+        this.createMaterials();
         this.createGround();
         this.createRamps();
         this.dropBall();
     }
 
+    createMaterials(){
+        this.redMat = new StandardMaterial("redMat", this.scene);
+        this.redMat.emissiveColor = new Color3(1, 0, 0);
+    }
+
     createGround(): void {
-        console.log("ground")
+
         const { scene } = this
 
-        const mesh = MeshBuilder.CreateGround('ground', { width: 20, height: 20 }, scene)
-        mesh.rotation.x = Math.PI/5;
-        new PhysicsAggregate(mesh, PhysicsShapeType.BOX, { mass: 0 }, scene)
+        const ground = MeshBuilder.CreateGround('ground', { width: 20, height: 20 }, scene)
+        ground.rotation.x = Math.PI / 5;
+        ground.material = this.redMat;
+
+        new PhysicsAggregate(ground, PhysicsShapeType.BOX, { mass: 0 }, scene)
     }
 
     async createRamps(): Promise<void> {
@@ -26,7 +37,8 @@ export class Ramps {
             "rampa.glb",
             this.scene
         );
-    new PhysicsAggregate(ramps.meshes[0], PhysicsShapeType.BOX, { mass: 0 }, this.scene)
+        new PhysicsAggregate(ramps.meshes[0], PhysicsShapeType.BOX, { mass: 0 }, this.scene)
+
 
 
     }
@@ -36,6 +48,7 @@ export class Ramps {
         ball.position._y = 30;
         ball.position._x = -9;
         ball.position._z = 3;
+        ball.material = this.redMat;
         new PhysicsAggregate(ball, PhysicsShapeType.SPHERE, { mass: 1, restitution: 0.75 }, this.scene)
 
     }
