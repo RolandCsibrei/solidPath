@@ -101,7 +101,8 @@ class App {
   _renderer(): void {
     this.engine.runRenderLoop(() => {
       this._fps()
-      this.scene.useRightHandedSystem = true;
+      this.scene.useRightHandedSystem = true; //compatible con blender
+      this.scene.debugLayer.show(); //inspector
       this.scene.render()
     })
   }

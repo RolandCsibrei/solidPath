@@ -1,8 +1,8 @@
 
-import { Color3, MeshBuilder, PBRMaterial, PhysicsAggregate, PhysicsShapeType, Scene, SceneLoader, StandardMaterial, Vector3 } from '@babylonjs/core'
+import { Color3, Mesh, MeshBuilder, PBRMaterial, PhysicsAggregate, PhysicsBody, PhysicsMotionType, PhysicsShapeMesh, PhysicsShapeType, Scene, SceneLoader, StandardMaterial, Vector3 } from '@babylonjs/core'
 import "@babylonjs/loaders";
 
-export class Ramps {
+export class Embudo {
     
     private pbr: PBRMaterial;
     private redMat: StandardMaterial;
@@ -12,7 +12,7 @@ export class Ramps {
     constructor(private scene: Scene) {
         this.createMaterials();
         this.createGround();
-        this.createRamps();
+        this.createPath();
         this.dropBall();
     }
 
@@ -39,33 +39,39 @@ export class Ramps {
         
     }
 
-    async createRamps(): Promise<void> {
+    async createPath(): Promise<void> {
         const ramps = await SceneLoader.ImportMeshAsync(
             "",
             "./model/",
-            "rampa.glb",
+            "embudo.glb",
             this.scene
         );
+        
 
-        ramps.meshes.map((mesh)=>mesh.material = this.greenMat)
-
-        // var path =  SceneLoader
-        // .ImportMesh("","https://raw.githubusercontent.com/leostereo/solidPath/main/","rampa.glb")
+//        ramps.meshes.map((mesh)=>mesh.material = this.greenMat)
 
         console.log(ramps.meshes)
         ramps.meshes.map((m) => {
-            const mAggregate = new PhysicsAggregate(m, PhysicsShapeType.BOX, { mass: 0 }, this.scene);
+          //  const mAggregate = new PhysicsAggregate(m, PhysicsShapeType.MESH, { mass: 0 }, this.scene);
+          const shape = new PhysicsShapeMesh(
+            m as Mesh,   // mesh from which to calculate the collisions
+            this.scene   // scene of the shape
+        );
+
         })
+
         
-        const mAggregate = new PhysicsAggregate(ramps.meshes[4], PhysicsShapeType.CYLINDER, { mass: 0 }, this.scene);
 
     }
 
     dropBall(): void {
-        const ball = MeshBuilder.CreateSphere('myBall', { diameter: 1, segments: 32 }, this.scene)
-        ball.position._y =0;
-        ball.position._x =0;
-        ball.position._z = 0;
+        const ball = MeshBuilder.CreateSphere('myBall', { diameter: 0.3, segments: 32 }, this.scene)
+        ball.position._y =7
+        ball.position._x =-3
+        ball.position._z =0
+        // ball.position._y =7
+        // ball.position._x =0
+        // ball.position._z =0
         ball.material = this.redMat;
         new PhysicsAggregate(ball, PhysicsShapeType.SPHERE, { mass: 1, restitution: 0.75 }, this.scene)
 
