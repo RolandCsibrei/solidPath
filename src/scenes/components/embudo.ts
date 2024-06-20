@@ -35,7 +35,7 @@ export class Embudo {
         //ground.material = this.blueMat;
         //ground.rotation.x = Math.PI / 5;
         
-        new PhysicsAggregate(ground, PhysicsShapeType.BOX, { mass: 0 }, scene)
+        new PhysicsAggregate(ground, PhysicsShapeType.CONVEX_HULL, { mass: 0 }, scene)
         
     }
 
@@ -48,32 +48,25 @@ export class Embudo {
         );
         
 
-//        ramps.meshes.map((mesh)=>mesh.material = this.greenMat)
-
-        console.log(ramps.meshes)
-        ramps.meshes.map((m) => {
-          //  const mAggregate = new PhysicsAggregate(m, PhysicsShapeType.MESH, { mass: 0 }, this.scene);
-          const shape = new PhysicsShapeMesh(
-            m as Mesh,   // mesh from which to calculate the collisions
-            this.scene   // scene of the shape
-        );
-
-        })
-
-        
+         ramps.meshes[1].material = this.greenMat
+         
+         const mAggregate1 = new PhysicsAggregate(ramps.meshes[1], PhysicsShapeType.MESH, { mass: 0 }, this.scene);
+         const mAggregate2 = new PhysicsAggregate(ramps.meshes[2], PhysicsShapeType.MESH, { mass: 0 }, this.scene);
+      
 
     }
 
     dropBall(): void {
         const ball = MeshBuilder.CreateSphere('myBall', { diameter: 0.3, segments: 32 }, this.scene)
         ball.position._y =7
-        ball.position._x =-3
+        ball.position._x =-4
         ball.position._z =0
-        // ball.position._y =7
-        // ball.position._x =0
-        // ball.position._z =0
+
         ball.material = this.redMat;
-        new PhysicsAggregate(ball, PhysicsShapeType.SPHERE, { mass: 1, restitution: 0.75 }, this.scene)
+
+        setInterval(()=>{
+            new PhysicsAggregate(ball, PhysicsShapeType.SPHERE, { mass: 1, restitution: 0.75 }, this.scene)
+        },1000)
 
     }
 

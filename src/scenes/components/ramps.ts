@@ -63,9 +63,9 @@ export class Ramps {
 
     dropBall(): void {
         const ball = MeshBuilder.CreateSphere('myBall', { diameter: 1, segments: 32 }, this.scene)
-        ball.position._y =0;
-        ball.position._x =0;
-        ball.position._z = 0;
+        ball.position._y = 13;
+        ball.position._x = 10;
+        ball.position._z = 3;
         ball.material = this.redMat;
         new PhysicsAggregate(ball, PhysicsShapeType.SPHERE, { mass: 1, restitution: 0.75 }, this.scene)
 
