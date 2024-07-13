@@ -3,6 +3,7 @@ import * as BABYLON from '@babylonjs/core/Legacy/legacy'
 import '@babylonjs/loaders'
 
 import { Ground } from './ground'
+import { ThirdPersonController } from './thirdPersonController'
 
 export default class MainScene {
   private camera: BABYLON.ArcRotateCamera
@@ -10,6 +11,7 @@ export default class MainScene {
   constructor(private scene: BABYLON.Scene, private canvas: HTMLCanvasElement, private engine: BABYLON.Engine) {
     this._setCamera(scene)
     this._setLight(scene)
+    this._setSkyBox();
     this.loadComponents()
   }
 
@@ -28,8 +30,23 @@ export default class MainScene {
   //   const pipeline = new BABYLON.DefaultRenderingPipeline('default-pipeline', false, this.scene, [this.scene.activeCamera!])
   // }
 
+  _setSkyBox():void{
+    const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 20000 }, this.scene);
+    sphere.infiniteDistance = true;
+    const sphereMaterial = new BABYLON.StandardMaterial('sphereMaterial', this.scene);
+    // sphereMaterial.emissiveTexture = new BABYLON.Texture(
+    //     import.meta.env.BASE_URL + '/skybox.png',
+    //     this.scene
+    // );
+    //sphereMaterial.emissiveTexture.coordinatesMode = BABYLON.Texture.SPHERICAL_MODE;
+    sphereMaterial.backFaceCulling = false;
+    sphereMaterial.disableLighting = true;
+    sphere.material = sphereMaterial;
+  }
+
   loadComponents(): void {
     // Load your files in order
     new Ground(this.scene)
+    new ThirdPersonController(this.camera,this.scene)
   }
 }
