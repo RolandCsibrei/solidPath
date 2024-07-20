@@ -1,15 +1,13 @@
-import * as BABYLON from '@babylonjs/core/Legacy/legacy'
 import '@babylonjs/loaders'
-import { Vector3 } from 'babylonjs';
-
-import { CharacterController } from "babylonjs-charactercontroller";
+import { CharacterController } from './CharacterController';
+import { AnimationGroup, ArcRotateCamera, Engine, HemisphericLight, Mesh, MeshBuilder, SceneLoader, StandardMaterial, Vector3 } from '@babylonjs/core';
 
 export default class MainScene {
 
-  private allAGs: BABYLON.AnimationGroup[];
+  private allAGs: AnimationGroup[];
   private cc: CharacterController;
 
-  constructor(private scene: BABYLON.Scene, private canvas: HTMLCanvasElement, private engine: BABYLON.Engine) {
+  constructor(private scene: Scene, private canvas: HTMLCanvasElement, private engine: Engine) {
     this.setCamNLight();
     //this.loadPlayer();
     this.loadPlayerAsync();
@@ -17,26 +15,28 @@ export default class MainScene {
 
   setCamNLight() {
 
-    var camera1 = new BABYLON.ArcRotateCamera("camera1", 3 * Math.PI / 8, 3 * Math.PI / 8, 15, new BABYLON.Vector3(0, 2, 0), this.scene);
+    var camera1 = new ArcRotateCamera("camera1", 3 * Math.PI / 8, 3 * Math.PI / 8, 15, new Vector3(0, 2, 0), this.scene);
     camera1.attachControl(this.canvas, true);
-    this.camera = camera1;
+    // this.camera = camera1;
 
     // lights
-    var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 0.5, 0), this.scene);
+    var light1 = new HemisphericLight("light1", new Vector3(1, 0.5, 0), this.scene);
     light1.intensity = 0.7;
-    var light2 = new BABYLON.HemisphericLight("light2", new BABYLON.Vector3(-1, -0.5, 0), this.scene);
+    var light2 = new HemisphericLight("light2", new Vector3(-1, -0.5, 0), this.scene);
     light2.intensity = 0.2;
 
-    var box = BABYLON.MeshBuilder.CreateBox("Box", { size: 1 }, this.scene);
-    box.material = new BABYLON.StandardMaterial("", this.scene);
+    var box = MeshBuilder.CreateBox("Box", { size: 1 }, this.scene);
+    box.material = new StandardMaterial("", this.scene);
     box.position.x += 5
     box.checkCollisions = true;
 
   }
 
   loadPlayer() {
-    BABYLON.SceneLoader.ImportMesh("", "model/", "Vincent-frontFacing.glb", this.scene, (meshes, particleSystems, skeletons) => {
+    SceneLoader.ImportMesh("", "model/", "Vincent-frontFacing.glb", this.scene, (meshes, particleSystems, skeletons) => {
       var player = meshes[0];
+
+      debugger
 
       //clean up this player mesh
       //it has camera and lights, lets remove them
@@ -46,11 +46,11 @@ export default class MainScene {
         if (m[i].name == "Camera" || m[i].name == "Hemi" || m[i].name == "Lamp") m[i].dispose();
       }
 
-      player.position = new BABYLON.Vector3(0, 0, 0);
+      player.position = new Vector3(0, 0, 0);
       player.checkCollisions = true;
 
-      player.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
-      player.ellipsoidOffset = new BABYLON.Vector3(0, 1, 0);
+      player.ellipsoid = new Vector3(0.5, 1, 0.5);
+      player.ellipsoidOffset = new Vector3(0, 1, 0);
 
       // character controller  needs rotation in euler.
       // if your mesh has rotation in quaternion then convert that to euler.
@@ -63,8 +63,8 @@ export default class MainScene {
       player.rotation.y = Math.PI / 4;
       var alpha = (3 * Math.PI) / 2 - player.rotation.y;
       var beta = Math.PI / 2.5;
-      var target = new BABYLON.Vector3(player.position.x, player.position.y + 1.5, player.position.z);
-      var camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", alpha, beta, 5, target, this.scene);
+      var target = new Vector3(player.position.x, player.position.y + 1.5, player.position.z);
+      var camera = new ArcRotateCamera("ArcRotateCamera", alpha, beta, 5, target, this.scene);
 
       // make sure the keyboard keys controlling camera are different from those controlling player
       // here we will not use any keyboard keys to control camera
@@ -151,7 +151,7 @@ export default class MainScene {
   }
   
   async loadPlayerAsync() {
-    const model = await BABYLON.SceneLoader.ImportMeshAsync(
+    const model = await SceneLoader.ImportMeshAsync(
       "",
       "./model/",
       "Vincent-frontFacing.glb",
@@ -159,6 +159,8 @@ export default class MainScene {
   );
 
     var player = model.meshes[0];
+
+    debugger
 
       //clean up this player mesh
       //it has camera and lights, lets remove them
@@ -168,16 +170,16 @@ export default class MainScene {
         if (m[i].name == "Camera" || m[i].name == "Hemi" || m[i].name == "Lamp") m[i].dispose();
       }
 
-      player.position = new BABYLON.Vector3(0, 0, 0);
+      player.position = new Vector3(0, 0, 0);
       player.checkCollisions = true;
 
-      player.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
-      player.ellipsoidOffset = new BABYLON.Vector3(0, 1, 0);
+      player.ellipsoid = new Vector3(0.5, 1, 0.5);
+      player.ellipsoidOffset = new Vector3(0, 1, 0);
 
       // character controller  needs rotation in euler.
       // if your mesh has rotation in quaternion then convert that to euler.
       // NOTE: The GLTF/GLB files have rotation in quaternion
-      player.rotation = player.rotationQuaternion.toEulerAngles();
+      player.rotation = player.rotationQuaternion!.toEulerAngles();
       player.rotationQuaternion = null;
 
       //rotate the camera behind the player
@@ -185,8 +187,8 @@ export default class MainScene {
       player.rotation.y = Math.PI / 4;
       var alpha = (3 * Math.PI) / 2 - player.rotation.y;
       var beta = Math.PI / 2.5;
-      var target = new BABYLON.Vector3(player.position.x, player.position.y + 1.5, player.position.z);
-      var camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", alpha, beta, 5, target, this.scene);
+      var target = new Vector3(player.position.x, player.position.y + 1.5, player.position.z);
+      var camera = new ArcRotateCamera("ArcRotateCamera", alpha, beta, 5, target, this.scene);
 
       // make sure the keyboard keys controlling camera are different from those controlling player
       // here we will not use any keyboard keys to control camera
@@ -222,7 +224,7 @@ export default class MainScene {
 
       var agMap = this.createAGmap(this.allAGs);
 
-      this.cc = new CharacterController(player, camera, this.scene, agMap, true);
+      this.cc = new CharacterController(<Mesh>player, camera, this.scene, agMap, true);
 
       this.cc.setMode(0);
       //below makes the controller point the camera at the player head which is approx
@@ -267,7 +269,7 @@ export default class MainScene {
       //if something comes between camera and avatar make the obstruction invisible?
       this.cc.makeObstructionInvisible(false);
 
-      this.cc.start();
+      // this.cc.start();
 
 
   }
